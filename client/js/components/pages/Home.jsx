@@ -1,15 +1,9 @@
 import React from 'react';
 
-import Button from 'react-bootstrap/Button';
-import {Link} from 'react-router-dom';
-
 const Home = () => {
   return (
     <div>
-      Home
-      <Link to="/jobs">
-        <Button>Jobs</Button>
-      </Link>
+      Welcome to the home page, I don't know what to put here, so uhm, hi
     </div>
   );
 };
