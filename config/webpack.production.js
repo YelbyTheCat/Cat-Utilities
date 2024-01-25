@@ -3,7 +3,10 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   output: {publicPath: './'},
-  entry: './client/js/Index.jsx',
+  entry: {
+    main: './client/js/Index.jsx',
+    hashMain: './client/js/HashIndex.jsx'
+  },
   mode: 'production',
   module: {
     rules: [
@@ -36,7 +39,16 @@ module.exports = {
       template: './client/index.html.ejs', 
       bsTheme: process.env.BS_THEME || 'dark',
       favicon: './client/img/iTBS - EditedF.ico',
-      base: './'
+      base: './',
+      chunks: ['main']
+    }),
+    new htmlWebpackPlugin({
+      template: './client/index.html.ejs', 
+      bsTheme: process.env.BS_THEME || 'dark',
+      favicon: './client/img/iTBS - EditedF.ico',
+      base: './',
+      chunks: ['hashMain'],
+      filename: 'static.html'
     })
   ],
   resolve: {

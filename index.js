@@ -24,7 +24,6 @@ app.get('*', (req, res, next) => {
 });
 
 // Api Paths
-
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
