@@ -1,26 +1,20 @@
-import React, {useState} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import Form from 'react-bootstrap/Form';
-import {formatMoney, formatProperty} from '../../helpers/format-helper';
+import {formatProperty} from '../../helpers/format-helper';
+import {useFormContext} from 'react-hook-form';
 
-const Money = ({className='mb-1', label, placeholder, disabled, property, value=''}) => {
-
-  const [textValue, setTextValue] = useState(value);
-
-  const handleOnBlur = value => {
-    setTextValue(formatMoney(value));
-  };
+const Money = ({className='mb-1', label, placeholder, disabled, property}) => {
+  const {register} = useFormContext();
+  const controlId = property || formatProperty(label);
 
   return (
-    <Form.Group controlId={property || formatProperty(label)} {...{className}}>
+    <Form.Group {...{className, controlId}}>
       <Form.Label>{label}</Form.Label>
       <Form.Control 
         type="text" 
-        value={textValue} 
-        onChange={e => setTextValue(e.target.value)} 
-        onBlur={e => !/^[a-zA-Z]+$/.test(textValue) && handleOnBlur(e.target.value)} 
-        isInvalid={/^[a-zA-Z]+$/.test(textValue)}
+        {...register(controlId)}
         {...{placeholder, disabled}}/>
     </Form.Group>
   );

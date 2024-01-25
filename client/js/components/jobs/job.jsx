@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {useParams} from 'react-router-dom';
-
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import {FormProvider, useForm} from 'react-hook-form';
 
 import Form from 'react-bootstrap/Form';
 import Text from '../inputs/Text';
@@ -12,32 +10,59 @@ import Money from '../inputs/Money';
 import HorizontalGroup from '../inputs/HorizontalGroup';
 import TextArea from '../inputs/TextArea';
 import FormSubmit from '../buttons/FormSubmit';
+import Date from '../inputs/Date';
+
+const jobData = {
+  companyName: 'CatsRUs',
+  dateApplied: '2024-02-01',
+  rangeMax: '$200',
+  rangeMin: '$3',
+  location: 'United States',
+  heardBack: true,
+  inProgress: false,
+  denied: true,
+  companySummary: 'I like animals',
+  tasks: 'Do the thing',
+  requirements: 'Have legs',
+  benefits: 'there are none'
+};
 
 const Job = ({data}) => {
 
   const {jobId} = useParams();
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    console.log(e.target[1].value);
+  const methods = useForm({
+    defaultValues: jobData
+  });
+  const {handleSubmit, watch} = methods;
+
+  const onSubmit = data => {
+    console.log('Form Submitted', data);
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Text label="Company Name" placeholder="Company Name..."/>
-      <HorizontalGroup>
-        <Money label="Range Max"/>
-        <Money label="Range Min"/>
-      </HorizontalGroup>
-      <Bool label="Heard back"/>
-      <Bool label="In Progress"/>
-      <Bool label="Denied"/>
-      <TextArea label='Company Summary'/>
-      <TextArea label='Tasks'/>
-      <TextArea label='Requirements'/>
-      <TextArea label='Benefits'/>
-      <FormSubmit/>
-    </Form>
+    <>
+      <FormProvider {...methods}>
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Text label="Company Name" placeholder="Company Name..."/>
+          <HorizontalGroup>
+            <Date label="Date Applied"/>
+            <Money label="Range Max"/>
+            <Money label="Range Min"/>
+          </HorizontalGroup>
+          <Text label="Location"/>
+          <Bool label="Heard back"/>
+          <Bool label="In Progress"/>
+          <Bool label="Denied"/>
+          <TextArea label='Company Summary'/>
+          <TextArea label='Tasks'/>
+          <TextArea label='Requirements'/>
+          <TextArea label='Benefits'/>
+          <FormSubmit/>
+        </Form>
+      </FormProvider>
+      <pre>{JSON.stringify(watch(), 0, 2)}</pre>
+    </>
   );
 };
 

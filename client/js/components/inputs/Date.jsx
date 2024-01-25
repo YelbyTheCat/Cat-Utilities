@@ -5,23 +5,25 @@ import Form from 'react-bootstrap/Form';
 import {formatProperty} from '../../helpers/format-helper';
 import {useFormContext} from 'react-hook-form';
 
-const Bool = ({className='mb-1', label, placeholder, disabled, property}) => {
+const Date = ({className='mb-1', label='', placeholder, disabled, property, as}) => {
   const {register} = useFormContext();
   const controlId = property || formatProperty(label);
 
   return (
     <Form.Group {...{className, controlId}}>
-      <Form.Check type="checkbox" {...register(controlId)} {...{label, placeholder, disabled}}/>
+      <Form.Label>{label}</Form.Label>
+      <Form.Control type="date" {...register(controlId)} {...{placeholder, disabled, as,}}/>
     </Form.Group>
   );
 };
 
-Bool.propTypes = {
+Date.propTypes = {
   className: PropTypes.string,
   label: PropTypes.string,
   placeholder: PropTypes.string,
   disabled: PropTypes.bool,
-  property: PropTypes.string
+  property: PropTypes.string,
+  as: PropTypes.string
 };
 
-export default Bool;
+export default Date;
