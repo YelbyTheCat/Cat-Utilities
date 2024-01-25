@@ -1,8 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import Header from './Header';
-import {Outlet} from 'react-router-dom';
 
+import {Outlet} from 'react-router-dom';
+import Header from './header/Header';
 
 const Layout = () => {
   return (
@@ -12,11 +11,5 @@ const Layout = () => {
     </div>
   );
 };
-
-
-Layout.propTypes = {
-
-};
-
 
 export default Layout;

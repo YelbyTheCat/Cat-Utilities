@@ -1,19 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
 
 const Money = () => {
   return (
     <div>
-      Money
+      Money, money, money, money $
     </div>
   );
 };
-
-
-Money.propTypes = {
-
-};
-
 
 export default Money;
