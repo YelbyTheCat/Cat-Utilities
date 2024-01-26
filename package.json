@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index",
+    "start": "nodemon index",
     "build": "npx webpack --config ./config/webpack.production.js",
     "serve": "npx webpack serve --config ./config/webpack.config.js",
     "lint": "npx eslint",

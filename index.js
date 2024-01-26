@@ -4,6 +4,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 const path = require('path');
 
+// Api Paths
+app.use('/api/google-sheets', require('./routes/api/google-sheets'));
+app.use('/api/jobs', require('./routes/api/jobs'));
+
 // Refresh fix
 const config = require('./config/webpack.config');
 const compiler = require('webpack')(config);
@@ -21,11 +25,6 @@ app.get('*', (req, res, next) => {
     res.send(result);
     res.end();
   });
-});
-
-// Api Paths
-app.get('/', (req, res) => {
-  res.send('Hello World!');
 });
 
 app.listen(port, () => {

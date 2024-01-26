@@ -15,8 +15,8 @@ import Date from '../inputs/Date';
 const jobData = {
   companyName: 'CatsRUs',
   dateApplied: '2024-02-01',
-  rangeMax: '$200',
-  rangeMin: '$3',
+  rangeMax: '200',
+  rangeMin: '3',
   location: 'United States',
   heardBack: true,
   inProgress: false,
@@ -45,6 +45,7 @@ const Job = ({data}) => {
       <FormProvider {...methods}>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Text label="Company Name" placeholder="Company Name..."/>
+          <Text label="Position"/>
           <HorizontalGroup>
             <Date label="Date Applied"/>
             <Money label="Range Max"/>
@@ -52,8 +53,10 @@ const Job = ({data}) => {
           </HorizontalGroup>
           <Text label="Location"/>
           <Bool label="Heard back"/>
+          {watch('heardBack') && <Date label="Heard back date"/>}
           <Bool label="In Progress"/>
           <Bool label="Denied"/>
+          {watch('denied') && <TextArea label='Denied Response'/>}
           <TextArea label='Company Summary'/>
           <TextArea label='Tasks'/>
           <TextArea label='Requirements'/>

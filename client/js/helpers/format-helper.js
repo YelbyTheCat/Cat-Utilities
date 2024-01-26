@@ -1,17 +1,18 @@
 const _ = require('lodash');
 
 export const formatMoney = value => {
+  const amount = value.replace('$', '').replace(',', '');
   const formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   });
-  return formatter.format(value);
+  console.log(amount);
+  return formatter.format(amount);
 };
 
 
 /**
+ * Convert label into camel cased property name
  * @param {string} text 
  * @return {string} camelCase
  */
@@ -23,4 +24,25 @@ export const formatProperty = text => {
   // }).replace(/\s+/g, '');
   // return camelCase;
   return _.camelCase(text);
+};
+
+const createObject = (headers, data) => {
+  const dataObject = {};
+  for (let i = 0; i < data.length; i++) {
+    dataObject[headers[i]] = data[i];
+  }
+  return dataObject;
+};
+
+export const formatArrayOfArraysToObject = data => {
+  const headers = data.shift();
+
+  const newData = [];
+  for (let i = 0; i < data.length; i++) {
+    const current = data[i];
+    const dataObject = createObject(headers, current);
+    newData.push(dataObject);
+  }
+
+  return newData;
 };
