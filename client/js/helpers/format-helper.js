@@ -1,6 +1,11 @@
 const _ = require('lodash');
 
-export const formatMoney = value => {
+/**
+ * 
+ * @param {string} value 
+ * @returns 
+ */
+const formatMoney = value => {
   const amount = value.replace('$', '').replace(',', '');
   const formatter = new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
@@ -16,7 +21,7 @@ export const formatMoney = value => {
  * @param {string} text 
  * @return {string} camelCase
  */
-export const formatProperty = text => {
+const formatProperty = text => {
   // const lowerCase = text.toLowerCase();
   // const trimmed = lowerCase.replace(/\s+/g, ' ').trim();
   // const camelCase = trimmed.replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
@@ -26,23 +31,34 @@ export const formatProperty = text => {
   return _.camelCase(text);
 };
 
-const createObject = (headers, data) => {
+const createObject = (headers, data = []) => {
   const dataObject = {};
-  for (let i = 0; i < data.length; i++) {
-    dataObject[headers[i]] = data[i];
+  for (let i = 0; i < headers.length; i++) {
+    dataObject[headers[i]] = data.length > i ? data[i] : null;
   }
   return dataObject;
 };
 
-export const formatArrayOfArraysToObject = data => {
-  const headers = data.shift();
+/**
+ * Turns an array of arrays into an array of objects
+ * @param {*} data an array of arrays
+ * @returns {*} An array of objects
+ */
+const formatArrayOfArraysToObject = data => {
+  const headers = data[0];
 
   const newData = [];
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 1; i < data.length; i++) {
     const current = data[i];
     const dataObject = createObject(headers, current);
     newData.push(dataObject);
   }
 
   return newData;
+};
+
+module.exports = {
+  formatMoney,
+  formatArrayOfArraysToObject,
+  formatProperty
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Form from 'react-bootstrap/Form';
-import {formatProperty} from '../../helpers/format-helper';
+import {formatProperty} from '../../helpers/format-helper.js';
 import {useFormContext} from 'react-hook-form';
 
 const Date = ({className='mb-1', label='', placeholder, disabled, property, as}) => {
