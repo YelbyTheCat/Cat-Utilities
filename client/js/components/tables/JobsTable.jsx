@@ -7,7 +7,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faCheck, faX} from '@fortawesome/free-solid-svg-icons';
 import {useNavigate} from 'react-router-dom';
 
-const JobsTable = ({data}) => {
+const JobsTable = ({data, paginationSize}) => {
 
   const navigate = useNavigate();
 
@@ -38,12 +38,13 @@ const JobsTable = ({data}) => {
   ];
 
   return (
-    <DisplayTable onRowClick={id => navigate(`${id.toString()}`)} columns={defaultColumns} {...{data}}/>
+    <DisplayTable onRowClick={id => navigate(`${id.toString()}`)} columns={defaultColumns} {...{data, paginationSize}}/>
   );
 };
 
 JobsTable.propTypes = {
-  data: PropTypes.array
+  data: PropTypes.array,
+  paginationSize: PropTypes.number,
 };
 
 export default JobsTable;

@@ -53,7 +53,7 @@ const Jobs = () => {
           <div>
             <NewButton label="New Job" onClick={() => setShow(true)}/>
             <NewButton className="ms-1" label="Refresh" variant='link' onClick={async () => await fetchJobs()}/>
-            <JobsTable data={jobs}/>
+            <JobsTable data={jobs} paginationSize={100}/>
           </div>
         )}
       </div>

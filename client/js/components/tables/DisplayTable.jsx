@@ -4,12 +4,15 @@ import PropTypes from 'prop-types';
 import {flexRender, getCoreRowModel, useReactTable} from '@tanstack/react-table';
 import Table from 'react-bootstrap/Table';
 
-const DisplayTable = ({data, columns, onRowClick}) => {
+const DisplayTable = ({data, columns, onRowClick, paginationSize=10}) => {
 
   const table = useReactTable({
     data,
     columns,
-    getCoreRowModel: getCoreRowModel()
+    getCoreRowModel: getCoreRowModel(),
+    initialState: {
+      pageSize: paginationSize
+    }
   });
 
   return (
@@ -54,7 +57,8 @@ DisplayTable.propTypes = {
   data: PropTypes.array,
   header: PropTypes.array,
   columns: PropTypes.array,
-  onRowClick: PropTypes.func
+  onRowClick: PropTypes.func,
+  paginationSize: PropTypes.number,
 };
 
 export default DisplayTable;
