@@ -1,22 +1,26 @@
 import React, {useState, useEffect} from 'react';
-import PropTypes from 'prop-types';
-import {getJobs} from '../../actions/jobs-actions';
+import {createJob, getJobs} from '../../actions/jobs-actions';
+import {formatArrayOfArraysToObject, formatObjectToArray} from '../../helpers/format-helper';
 
 import Alert from 'react-bootstrap/Alert';
-import {formatArrayOfArraysToObject} from '../../helpers/format-helper';
+import JobsTable from '../tables/JobsTable';
+import NewButton from '../buttons/NewButton';
+import JobsModal from '../modals/JobsModal';
 
 const Jobs = () => {
 
   const [jobs, setJobs] = useState(null);
+  const [header, setHeader] = useState(null);
   const [error, setError] = useState(null);
+  const [show, setShow] = useState(false);
 
   const fetchJobs = async () => {
     try {
       const res = await getJobs();
       const {data} = res;
-      console.log(res, data);
-      const newData = formatArrayOfArraysToObject(data?.data?.values);
+      const newData = formatArrayOfArraysToObject([data.header, ...data.data]);
       setJobs(newData);
+      setHeader(data.header);
       setError(null);
     } catch (e) {
       setError("Couldn't get jobs");
@@ -27,21 +31,35 @@ const Jobs = () => {
     fetchJobs();
   }, []);
 
+  const onSubmit = async data => {
+    setShow(false);
+    try {
+      const formattedData = formatObjectToArray(header, data);
+      const highestId = Math.max.apply(null, jobs.map(job => {return job.id;}));
+      formattedData[0] = highestId + 1;
+      await createJob({data: formattedData});
+      await fetchJobs();
+    } catch (e) {
+      // Do nothing
+    }
+  };
+
   return (
     <>
       {error && <Alert variant='danger'>{error}</Alert>}
       <div>
-      Jobs
+        Jobs
+        {jobs && (
+          <div>
+            <NewButton label="New Job" onClick={() => setShow(true)}/>
+            <NewButton className="ms-1" label="Refresh" variant='link' onClick={async () => await fetchJobs()}/>
+            <JobsTable data={jobs}/>
+          </div>
+        )}
       </div>
-      <pre>{JSON.stringify(jobs, 0, 2)}</pre>
+      <JobsModal {...{show, setShow, onSubmit}}/>
     </>
   );
 };
-
-
-Jobs.propTypes = {
-
-};
-
 
 export default Jobs;

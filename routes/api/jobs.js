@@ -29,7 +29,9 @@ router.get('/', async (req, res) => {
     range: tableName
   });
 
-  res.send(getRows);
+  const header = getRows.data.values.shift();
+
+  res.send({header, data: getRows.data.values});
 });
 
 router.get('/:id', async (req, res) => {
@@ -58,6 +60,24 @@ router.get('/:id', async (req, res) => {
   const formattedTarget = formatArrayOfArraysToObject([headers, target]);
 
   res.send({id, headers, data: formattedTarget});
+});
+
+router.post('/', async (req, res) => {
+
+  const {data} = req.body;
+  if (!data) res.status(500);
+
+  const {googleSheets, auth} = await authGoogleApi();
+
+  await googleSheets.spreadsheets.values.append({
+    auth,
+    spreadsheetId,
+    range: tableName,
+    valueInputOption: 'RAW',
+    resource: {
+      values: [data]
+    }
+  });
 });
 
 module.exports = router;

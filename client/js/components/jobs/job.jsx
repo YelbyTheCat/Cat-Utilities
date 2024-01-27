@@ -1,37 +1,20 @@
 import React, {useState, useEffect} from 'react';
-import PropTypes from 'prop-types';
-import {useParams} from 'react-router-dom';
-import {FormProvider, useForm} from 'react-hook-form';
-
-import Form from 'react-bootstrap/Form';
-import Text from '../inputs/Text';
-import Bool from '../inputs/Bool';
-import Money from '../inputs/Money';
-import HorizontalGroup from '../inputs/HorizontalGroup';
-import TextArea from '../inputs/TextArea';
-import FormSubmit from '../buttons/FormSubmit';
-import Date from '../inputs/Date';
-import FormWrapper from '../FormWrapper';
+import {useNavigate, useParams} from 'react-router-dom';
 import {getJob} from '../../actions/jobs-actions';
-import Alert from 'react-bootstrap/Alert';
 
-const jobData = {
-  companyName: 'CatsRUs',
-  dateApplied: '2024-02-01',
-  rangeMax: '200',
-  rangeMin: '3',
-  location: 'United States',
-  heardBack: true,
-  inProgress: false,
-  denied: true,
-  companySummary: 'I like animals',
-  tasks: 'Do the thing',
-  requirements: 'Have legs',
-  benefits: 'there are none'
-};
+import Alert from 'react-bootstrap/Alert';
+import Bool from '../inputs/Bool';
+import Button from 'react-bootstrap/Button';
+import Date from '../inputs/Date';
+import FormSubmit from '../buttons/FormSubmit';
+import FormWrapper from '../FormWrapper';
+import HorizontalGroup from '../inputs/HorizontalGroup';
+import Money from '../inputs/Money';
+import Text from '../inputs/Text';
+import TextArea from '../inputs/TextArea';
 
 const Job = () => {
-
+  const navigate = useNavigate();
   const {jobId} = useParams();
 
   const [job, setJob] = useState(null);
@@ -41,10 +24,7 @@ const Job = () => {
   const fetchJob = async () => {
     try {
       const res = await getJob(jobId.toString());
-      // console.log(res);
       const {data} = res;
-      // console.log(data);
-      console.log('data.data[0]', data.data[0]);
       setJob(data.data[0]);
       setHeaders(data.headers);
       setError(null);
@@ -62,9 +42,11 @@ const Job = () => {
     console.log('Form Submitted', data);
   };
 
-
   return (
     <>
+      <Button onClick={() => navigate(-1)} variant="link">
+        Back to Jobs
+      </Button>
       {error && <Alert variant="danger">{error}</Alert>}
       {job && <FormWrapper data={job} debugMode {...{onSubmit}}>
         <Text label="Company Name" placeholder="Company Name..."/>
@@ -92,11 +74,5 @@ const Job = () => {
     </>
   );
 };
-
-
-Job.propTypes = {
-
-};
-
 
 export default Job;

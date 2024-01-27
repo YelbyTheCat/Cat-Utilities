@@ -11,7 +11,6 @@ const formatMoney = value => {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   });
-  console.log(amount);
   return formatter.format(amount);
 };
 
@@ -57,8 +56,18 @@ const formatArrayOfArraysToObject = data => {
   return newData;
 };
 
+const formatObjectToArray = (header, data) => {
+  const newArrayItem = [];
+  for (let i = 0; i < header.length; i++) {
+    const name = header[i];
+    newArrayItem.push(data[name] || '');
+  }
+  return newArrayItem;
+};
+
 module.exports = {
   formatMoney,
   formatArrayOfArraysToObject,
-  formatProperty
+  formatProperty,
+  formatObjectToArray
 };

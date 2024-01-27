@@ -4,6 +4,8 @@ const app = express();
 const port = process.env.PORT || 3000;
 const path = require('path');
 
+app.use(require('body-parser').json());
+
 // Api Paths
 app.use('/api/google-sheets', require('./routes/api/google-sheets'));
 app.use('/api/jobs', require('./routes/api/jobs'));

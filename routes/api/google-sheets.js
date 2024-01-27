@@ -9,17 +9,13 @@ const authGoogleApi = async () => {
     scopes: 'https://www.googleapis.com/auth/spreadsheets'
   });
 
-  console.log('------------auth', auth);
-
   const client = await auth.getClient();
-  console.log('------------client', auth);
+  
   const googleSheets = google.sheets({version: 'v4', auth: {client}});
   return {googleSheets, auth};
 };
 
 router.get('/', async (req, res) => {
-  const options = req?.query;
-  console.log('---------------options', options);
   const {googleSheets, auth} = await authGoogleApi();
 
   // Get metadata about spreadsheet
@@ -27,8 +23,6 @@ router.get('/', async (req, res) => {
     auth,
     spreadsheetId
   });
-
-  console.log('options', options);
 
   res.send(metaData);
 });
