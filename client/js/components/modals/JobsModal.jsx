@@ -9,11 +9,12 @@ import HorizontalGroup from '../inputs/HorizontalGroup';
 import Date from '../inputs/Date';
 import Money from '../inputs/Money';
 import TextArea from '../inputs/TextArea';
+import {getDateToday} from '../../helpers/misc-getters-helps';
 
 const JobsModal = ({show, setShow, onSubmit}) => {
   return (
     <BaseModal title="New Job" {...{show, setShow}}>
-      <FormWrapper {...{onSubmit}}>
+      <FormWrapper data={{dateApplied: getDateToday()}} {...{onSubmit}}>
         <Text label="Company Name" placeholder="Company Name..."/>
         <HorizontalGroup>
           <Text label="Position"/>

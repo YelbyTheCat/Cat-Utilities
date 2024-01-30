@@ -38,7 +38,7 @@ const JobsTable = ({data, paginationSize}) => {
   ];
 
   return (
-    <DisplayTable onRowClick={id => navigate(`${id.toString()}`)} columns={defaultColumns} {...{data, paginationSize}}/>
+    <DisplayTable onRowClick={id => navigate(`${id.toString()}`)} showIndex columns={defaultColumns} {...{data, paginationSize}}/>
   );
 };
 

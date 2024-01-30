@@ -20,30 +20,46 @@ const findById = (id, list) => {
 };
 
 router.get('/', async (req, res) => {
-  const {googleSheets, auth} = await authGoogleApi();
 
-  // Get metadata about spreadsheet
-  const getRows = await googleSheets.spreadsheets.values.get({
-    auth,
-    spreadsheetId,
-    range: tableName
-  });
+  let header = null;
+  let values = null;
 
-  const header = getRows.data.values.shift();
+  try {
+    const {googleSheets, auth} = await authGoogleApi();
 
-  res.send({header, data: getRows.data.values});
+    // Get metadata about spreadsheet
+    const getRows = await googleSheets.spreadsheets.values.get({
+      auth,
+      spreadsheetId,
+      range: tableName
+    });
+
+    header = getRows.data.values.shift();
+    values = getRows.data.values;
+  } catch (e) {
+    res.send(500);
+  }
+
+
+  res.send({header, data: values});
 });
 
 router.get('/:id', async (req, res) => {
-  const {googleSheets, auth} = await authGoogleApi();
 
-  const getRows = await googleSheets.spreadsheets.values.get({
-    auth,
-    spreadsheetId,
-    range: tableName
-  });
+  let values = null;
 
-  const values = getRows?.data?.values;
+  try {
+    const {googleSheets, auth} = await authGoogleApi();
+    const getRows = await googleSheets.spreadsheets.values.get({
+      auth,
+      spreadsheetId,
+      range: tableName
+    });
+    
+    values = getRows?.data?.values;
+  } catch (e) {
+    res.status(500);
+  }
 
   if (!values) {
     res.status(500);
@@ -67,17 +83,24 @@ router.post('/', async (req, res) => {
   const {data} = req.body;
   if (!data) res.status(500);
 
-  const {googleSheets, auth} = await authGoogleApi();
+  try {
+    const {googleSheets, auth} = await authGoogleApi();
 
-  await googleSheets.spreadsheets.values.append({
-    auth,
-    spreadsheetId,
-    range: tableName,
-    valueInputOption: 'RAW',
-    resource: {
-      values: [data]
-    }
-  });
+    await googleSheets.spreadsheets.values.append({
+      auth,
+      spreadsheetId,
+      range: tableName,
+      valueInputOption: 'RAW',
+      resource: {
+        values: [data]
+      }
+    });
+
+    res.status(200);
+  } catch (e) {
+    res.status(500);
+  }
+
 });
 
 module.exports = router;

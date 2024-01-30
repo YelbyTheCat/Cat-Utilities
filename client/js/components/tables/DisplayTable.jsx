@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {flexRender, getCoreRowModel, useReactTable} from '@tanstack/react-table';
 import Table from 'react-bootstrap/Table';
 
-const DisplayTable = ({data, columns, onRowClick, paginationSize=10}) => {
+const DisplayTable = ({data, columns, onRowClick, paginationSize=10, showIndex}) => {
 
   const table = useReactTable({
     data,
@@ -20,6 +20,7 @@ const DisplayTable = ({data, columns, onRowClick, paginationSize=10}) => {
       <thead>
         {table.getHeaderGroups().map(headerGroup => (
           <tr key={headerGroup.id}>
+            {showIndex && <th>#</th>}
             {headerGroup.headers.map(header => (
               <th key={header.id}>
                 <div>
@@ -32,8 +33,9 @@ const DisplayTable = ({data, columns, onRowClick, paginationSize=10}) => {
       </thead>
       <tbody>
         {table.getRowModel().rows.length > 0 ? (
-          table.getRowModel().rows.map(row => (
+          table.getRowModel().rows.map((row, idx) => (
             <tr key={row.id} onClick={() => onRowClick(row.original.id)}>
+              {showIndex && <td>{idx+1}</td>}
               {row.getVisibleCells().map(cell => (
                 <td key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -59,6 +61,7 @@ DisplayTable.propTypes = {
   columns: PropTypes.array,
   onRowClick: PropTypes.func,
   paginationSize: PropTypes.number,
+  showIndex: PropTypes.bool
 };
 
 export default DisplayTable;
