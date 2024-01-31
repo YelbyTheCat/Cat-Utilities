@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
-import {getJob} from '../../actions/jobs-actions';
+import {getJob, updateJob} from '../../actions/jobs-actions';
 
 import Alert from 'react-bootstrap/Alert';
 import Bool from '../inputs/Bool';
@@ -12,6 +12,7 @@ import HorizontalGroup from '../inputs/HorizontalGroup';
 import Money from '../inputs/Money';
 import Text from '../inputs/Text';
 import TextArea from '../inputs/TextArea';
+import {formatObjectToArray} from '../../helpers/format-helper';
 
 const Job = () => {
   const navigate = useNavigate();
@@ -38,17 +39,24 @@ const Job = () => {
     fetchJob();
   }, []);
 
-  const onSubmit = data => {
-    console.log('Form Submitted', data);
+  const onSubmit = async data => {
+    const formattedData = formatObjectToArray(headers, data);
+    try {
+      const res = await updateJob(jobId, formattedData);
+      setError(null);
+      setJob(res.data.data);
+    } catch (e) {
+      setError("Couldn't update");
+    }
   };
 
   return (
     <>
       <Button onClick={() => navigate(-1)} variant="link">
-        Back to Jobs
+        {'<- Back to Jobs'}
       </Button>
       {error && <Alert variant="danger">{error}</Alert>}
-      {job && <FormWrapper data={job} debugMode {...{onSubmit}}>
+      {job && <FormWrapper data={job} debugMode={false} {...{onSubmit}}>
         <Text label="Company Name" placeholder="Company Name..."/>
         <HorizontalGroup>
           <Text label="Position"/>

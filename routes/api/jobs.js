@@ -61,19 +61,22 @@ router.get('/:id', async (req, res) => {
     
     values = getRows?.data?.values;
   } catch (e) {
-    res.status(500);
+    console.error('Error fetching data from Google Sheets:', e.message);
+    return res.status(500).send('Internal Server Error');
   }
 
   if (!values) {
-    res.status(500);
+    console.error('No data received from Google Sheets');
+    return res.status(500).send('Internal Server Error');
   }
 
   const {id} = req.params;
   const headers = values.shift();
   const target = findById(id, values);
 
-  if(!target) {
-    res.status(500);
+  if (!target) {
+    console.error(`Row with ID ${id} not found`);
+    return res.status(404).send('Not Found');
   }
 
   const formattedTarget = formatArrayOfArraysToObject([headers, target]);
@@ -103,7 +106,54 @@ router.post('/', async (req, res) => {
   } catch (e) {
     res.status(500);
   }
+});
 
+router.patch('/:id', async (req, res) => {
+  const {id} = req.params;
+  const newData = req.body;
+
+  try {
+    const {googleSheets, auth} = await authGoogleApi();
+    const getRows = await googleSheets.spreadsheets.values.get({
+      auth,
+      spreadsheetId,
+      range: tableName
+    });
+
+    const values = getRows?.data?.values;
+
+    if (!values) {
+      console.error('No data received from Google Sheets');
+      return res.status(500).send('Internal Server Error | Values');
+    }
+
+    const targetRowIndex = values.findIndex(row => row[0] === id);
+
+    if (targetRowIndex === -1) {
+      console.error(`Row with ID ${id} not found`);
+      return res.status(404).send('Not Found');
+    }
+
+    const updateResponse = await googleSheets.spreadsheets.values.update({
+      auth,
+      spreadsheetId,
+      range: `${tableName}!A${targetRowIndex + 1}`,
+      valueInputOption: 'RAW',
+      resource: {
+        values: [Object.values(newData)],
+      },
+    });
+
+    // const updatedData = updateResponse.data.updatedData;
+
+    const headers = values.shift();
+    const formattedValues = formatArrayOfArraysToObject([headers, ...values]);
+
+    res.send({ id, headers, data: formattedValues });
+  } catch (e) {
+    console.error('Error updating data in Google Sheets:', e.message);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 module.exports = router;
