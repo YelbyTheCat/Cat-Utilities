@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const {google} = require('googleapis');
 const {formatArrayOfArraysToObject} = require('../../client/js/helpers/format-helper.js');
+const {sortArrayOfObjects} = require('../../client/js/helpers/sort-helper.js');
 
 const spreadsheetId = process.env.SHEET_ID;
 const tableName = 'jobs';
@@ -21,7 +22,7 @@ const findById = (id, list) => {
 
 router.get('/', async (req, res) => {
 
-  let header = null;
+  let headers = null;
   let values = null;
 
   try {
@@ -34,14 +35,16 @@ router.get('/', async (req, res) => {
       range: tableName
     });
 
-    header = getRows.data.values.shift();
+    headers = getRows.data.values.shift();
     values = getRows.data.values;
   } catch (e) {
     res.send(500);
   }
 
+  const formattedValues = formatArrayOfArraysToObject([headers, ...values]);
+  const sortedValues = sortArrayOfObjects(formattedValues);
 
-  res.send({header, data: values});
+  res.send({headers, data: sortedValues});
 });
 
 router.get('/:id', async (req, res) => {

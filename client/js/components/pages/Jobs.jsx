@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {createJob, getJobs} from '../../actions/jobs-actions';
-import {formatArrayOfArraysToObject, formatObjectToArray} from '../../helpers/format-helper';
+import {formatObjectToArray} from '../../helpers/format-helper';
 
 import Alert from 'react-bootstrap/Alert';
 import JobsTable from '../tables/JobsTable';
@@ -18,9 +18,9 @@ const Jobs = () => {
     try {
       const res = await getJobs();
       const {data} = res;
-      const newData = formatArrayOfArraysToObject([data.header, ...data.data]);
-      setJobs(newData);
-      setHeader(data.header);
+      console.log(data);
+      setJobs(data.data);
+      setHeader(data.headers);
       setError(null);
     } catch (e) {
       setError("Couldn't get jobs");
