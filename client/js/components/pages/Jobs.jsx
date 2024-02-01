@@ -18,7 +18,6 @@ const Jobs = () => {
     try {
       const res = await getJobs();
       const {data} = res;
-      console.log(data);
       setJobs(data.data);
       setHeader(data.headers);
       setError(null);
@@ -36,7 +35,7 @@ const Jobs = () => {
     try {
       const formattedData = formatObjectToArray(header, data);
       const highestId = Math.max.apply(null, jobs.map(job => {return job.id;}));
-      formattedData[0] = highestId ? highestId + 1 : 1;
+      formattedData[0] = jobs.length ? highestId + 1 : 1;
       await createJob({data: formattedData});
       await fetchJobs();
     } catch (e) {
