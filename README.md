@@ -53,5 +53,3 @@ id	companyName	position	dateApplied	rangeMax	rangeMin	location	heardBack	heardBa
 8. Where it says `GOOGLE_APPLICATION_CREDENTIALS` append to the end `./secret.json` or whatever the local path is to your `secret.json`
 9. Put the `secret.json` file from two sections ago into the root folder (aka same folder package.json is in)
 10. Now everything should be done run it by doing `npm run start` then go to [localhost:3000](http://localhost:3000/)
-
-https://console.cloud.google.com/apis/api/sheets.googleapis.com/metrics?project=apitest-350820
