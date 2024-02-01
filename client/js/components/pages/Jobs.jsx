@@ -36,7 +36,7 @@ const Jobs = () => {
     try {
       const formattedData = formatObjectToArray(header, data);
       const highestId = Math.max.apply(null, jobs.map(job => {return job.id;}));
-      formattedData[0] = highestId + 1;
+      formattedData[0] = highestId ? highestId + 1 : 1;
       await createJob({data: formattedData});
       await fetchJobs();
     } catch (e) {
