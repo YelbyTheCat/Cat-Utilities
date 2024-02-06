@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const {google} = require('googleapis');
-const {formatArrayOfArraysToObject} = require('../../client/js/helpers/format-helper.js');
+const {formatJobsArrayOfArraysToObjectArray, formatJobObjectToJobsArray, formatJobsArrayToObjectArray} = require('../../client/js/helpers/format-helper.js');
 const {sortArrayOfObjects} = require('../../client/js/helpers/sort-helper.js');
 
 const spreadsheetId = process.env.SHEET_ID;
@@ -21,8 +21,6 @@ const findById = (id, list) => {
 };
 
 router.get('/', async (req, res) => {
-
-  let headers = null;
   let values = null;
 
   try {
@@ -35,16 +33,16 @@ router.get('/', async (req, res) => {
       range: tableName
     });
 
-    headers = getRows.data.values.shift();
+    getRows.data.values.shift(); // Remove headers
     values = getRows.data.values;
   } catch (e) {
     res.send(500);
   }
 
-  const formattedValues = formatArrayOfArraysToObject([headers, ...values]);
+  const formattedValues = formatJobsArrayOfArraysToObjectArray(values);
   const sortedValues = sortArrayOfObjects(formattedValues);
 
-  res.send({headers, data: sortedValues});
+  res.send(sortedValues);
 });
 
 router.get('/:id', async (req, res) => {
@@ -56,7 +54,7 @@ router.get('/:id', async (req, res) => {
     const getRows = await googleSheets.spreadsheets.values.get({
       auth,
       spreadsheetId,
-      range: tableName
+      range: tableName, 
     });
     
     values = getRows?.data?.values;
@@ -71,7 +69,7 @@ router.get('/:id', async (req, res) => {
   }
 
   const {id} = req.params;
-  const headers = values.shift();
+  values.shift();
   const target = findById(id, values);
 
   if (!target) {
@@ -79,17 +77,19 @@ router.get('/:id', async (req, res) => {
     return res.status(404).send('Not Found');
   }
 
-  const formattedTarget = formatArrayOfArraysToObject([headers, target]);
+  const formattedTarget = formatJobsArrayToObjectArray(target);
+  formattedTarget.id = id;
 
-  res.send({id, headers, data: formattedTarget});
+  res.send(formattedTarget);
 });
 
 router.post('/', async (req, res) => {
-
-  const {data} = req.body;
-  if (!data) res.status(500);
+  const data = req?.body;
+  if (!data || data === undefined) res.sendStatus(500);
 
   try {
+    const dataAsArray = formatJobObjectToJobsArray(data);
+
     const {googleSheets, auth} = await authGoogleApi();
 
     await googleSheets.spreadsheets.values.append({
@@ -98,13 +98,14 @@ router.post('/', async (req, res) => {
       range: tableName,
       valueInputOption: 'RAW',
       resource: {
-        values: [data]
+        values: [dataAsArray]
       }
     });
 
-    res.status(200);
+    res.sendStatus(200);
   } catch (e) {
-    res.status(500);
+    console.error('Error posting data in Google Sheets:', e.message);
+    res.status(500).send('Internal Server Error');
   }
 });
 
@@ -134,22 +135,23 @@ router.patch('/:id', async (req, res) => {
       return res.status(404).send('Not Found');
     }
 
+    const formattedData = formatJobObjectToJobsArray(newData);
+
     const updateResponse = await googleSheets.spreadsheets.values.update({
       auth,
       spreadsheetId,
       range: `${tableName}!A${targetRowIndex + 1}`,
       valueInputOption: 'RAW',
       resource: {
-        values: [Object.values(newData)],
+        values: [formattedData],
       },
     });
 
-    // const updatedData = updateResponse.data.updatedData;
+    console.log('updateResponse', updateResponse);
 
-    const headers = values.shift();
-    const formattedValues = formatArrayOfArraysToObject([headers, ...values]);
-
-    res.send({ id, headers, data: formattedValues });
+    if (updateResponse.status === 200) {
+      res.send(newData);
+    }
   } catch (e) {
     console.error('Error updating data in Google Sheets:', e.message);
     res.status(500).send('Internal Server Error');

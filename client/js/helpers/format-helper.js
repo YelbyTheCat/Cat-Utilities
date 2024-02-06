@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const jobHeader = require('../../../models/headers/job');
 
 /**
  * 
@@ -56,6 +57,43 @@ const formatArrayOfArraysToObject = data => {
   return newData;
 };
 
+const createObjectFromHeader = (header, row) => {
+  const dataObject = {};
+  for (let i = 0; i < header.length; i++) {
+    dataObject[header[i].property] = row.length > i ? row[i] : null;
+  }
+  return dataObject;
+};
+
+/**
+ * Takes in JOB 2d array and turns it into an array of objects
+ * @param {array} data array of arrays
+ * @return {array} An array of objects
+ */
+const formatJobsArrayOfArraysToObjectArray = data => {
+  return data.map(row => (createObjectFromHeader(jobHeader, row)));
+};
+
+const formatJobsArrayToObjectArray = row => {
+  return createObjectFromHeader(jobHeader, row);
+};
+
+const createRowFromObject = (header, obj) => {
+  const newRow = [];
+  for (let i = 0; i < header.length; i++) {
+    newRow[i] = obj[header[i].property] || null;
+  }
+  return newRow;
+};
+
+const formatJobObjectArrayToJobsArray = data => {
+  return data.map(job => createRowFromObject(jobHeader, job));
+};
+
+const formatJobObjectToJobsArray = data => {
+  return createRowFromObject(jobHeader, data);
+};
+
 const formatObjectToArray = (header, data) => {
   const newArrayItem = [];
   for (let i = 0; i < header.length; i++) {
@@ -69,5 +107,9 @@ module.exports = {
   formatMoney,
   formatArrayOfArraysToObject,
   formatProperty,
-  formatObjectToArray
+  formatObjectToArray,
+  formatJobsArrayOfArraysToObjectArray,
+  formatJobObjectArrayToJobsArray,
+  formatJobObjectToJobsArray,
+  formatJobsArrayToObjectArray
 };

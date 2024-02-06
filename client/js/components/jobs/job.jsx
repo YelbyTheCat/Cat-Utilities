@@ -12,22 +12,19 @@ import HorizontalGroup from '../inputs/HorizontalGroup';
 import Money from '../inputs/Money';
 import Text from '../inputs/Text';
 import TextArea from '../inputs/TextArea';
-import {formatObjectToArray} from '../../helpers/format-helper';
 
 const Job = () => {
   const navigate = useNavigate();
   const {jobId} = useParams();
 
   const [job, setJob] = useState(null);
-  const [headers, setHeaders] = useState([]);
   const [error, setError] = useState(null);
 
   const fetchJob = async () => {
     try {
       const res = await getJob(jobId.toString());
       const {data} = res;
-      setJob(data.data[0]);
-      setHeaders(data.headers);
+      setJob(data);
       setError(null);
     } catch (e) {
       setJob(null);
@@ -40,11 +37,11 @@ const Job = () => {
   }, []);
 
   const onSubmit = async data => {
-    const formattedData = formatObjectToArray(headers, data);
+    console.log(data);
     try {
-      const res = await updateJob(jobId, formattedData);
+      const res = await updateJob(jobId, data);
       setError(null);
-      setJob(res.data.data);
+      setJob(res.data);
     } catch (e) {
       setError("Couldn't update");
     }

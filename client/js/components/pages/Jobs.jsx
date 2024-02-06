@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {createJob, getJobs} from '../../actions/jobs-actions';
-import {formatObjectToArray} from '../../helpers/format-helper';
 
 import Alert from 'react-bootstrap/Alert';
 import JobsTable from '../tables/JobsTable';
@@ -10,7 +9,6 @@ import JobsModal from '../modals/JobsModal';
 const Jobs = () => {
 
   const [jobs, setJobs] = useState(null);
-  const [header, setHeader] = useState(null);
   const [error, setError] = useState(null);
   const [show, setShow] = useState(false);
 
@@ -18,8 +16,7 @@ const Jobs = () => {
     try {
       const res = await getJobs();
       const {data} = res;
-      setJobs(data.data);
-      setHeader(data.headers);
+      setJobs(data);
       setError(null);
     } catch (e) {
       setError("Couldn't get jobs");
@@ -33,13 +30,14 @@ const Jobs = () => {
   const onSubmit = async data => {
     setShow(false);
     try {
-      const formattedData = formatObjectToArray(header, data);
       const highestId = Math.max.apply(null, jobs.map(job => {return job.id;}));
-      formattedData[0] = jobs.length ? highestId + 1 : 1;
-      await createJob({data: formattedData});
-      await fetchJobs();
+      data.id = jobs.length ? highestId + 1 : 1;
+      console.log('before await', data);
+      const res = await createJob(data);
+      if (res.data) await fetchJobs();
     } catch (e) {
       // Do nothing
+      console.error(e);
     }
   };
 
