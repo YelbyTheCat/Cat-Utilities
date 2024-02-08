@@ -74,6 +74,7 @@ const Job = () => {
         <TextArea label='Tasks'/>
         <TextArea label='Requirements'/>
         <TextArea label='Benefits'/>
+        <Text label="Job URL" property="jobUrl"/>
         <FormSubmit/>
       </FormWrapper>}
     </>

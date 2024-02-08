@@ -29,6 +29,7 @@ const JobsModal = ({show, setShow, onSubmit}) => {
         <TextArea label='Tasks'/>
         <TextArea label='Requirements'/>
         <TextArea label='Benefits'/>
+        <Text label="Job URL" property="jobUrl"/>
         <FormSubmit/>
       </FormWrapper>
     </BaseModal>
