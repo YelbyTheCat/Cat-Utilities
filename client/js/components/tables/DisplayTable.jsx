@@ -1,57 +1,178 @@
-import React from 'react';
+import React, {useState, useRef, useCallback, useEffect} from 'react';
 import PropTypes from 'prop-types';
 
-import {flexRender, getCoreRowModel, useReactTable} from '@tanstack/react-table';
+import {flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable} from '@tanstack/react-table';
 import Table from 'react-bootstrap/Table';
+import Filter from './Filter';
+import Button from 'react-bootstrap/Button';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown';
 
-const DisplayTable = ({data, columns, onRowClick, paginationSize=10, showIndex}) => {
+function useSkipper() {
+  const shouldSkipRef = useRef(true);
+  const shouldSkip = shouldSkipRef.current;
+
+  const skip = useCallback(() => {
+    shouldSkipRef.current = false;
+  }, []);
+
+  useEffect(() => {
+    shouldSkipRef.current = true;
+  });
+
+  return [shouldSkip, skip];
+}
+
+const DisplayTable = ({data, columns, onRowClick, removeItem}) => {
+
+  const [sorting, setSorting] = useState([]);
+  const [columnFilters, setColumnFilters] = useState([]);
+  const [autoResetPageIndex/*, skipAutoResetPageIndex*/] = useSkipper();
+  const [dataLength, setDataLength] = useState(data.length || 0);
+
+  const handleFilter = (value, columnId) => {
+    const columnFiltersClone = structuredClone(columnFilters);
+    const index = columnFiltersClone.findIndex(item => item.id === columnId);
+
+    if (index === -1 && value.length > 0) {
+      // Add
+      columnFiltersClone.push({ id: columnId, value });
+    } else if (index > -1 && value.length > 0) {
+      // Update
+      columnFiltersClone[index].value = value;
+    } else {
+      // Remove
+      columnFiltersClone.splice(index, 1);
+    }
+
+    return columnFiltersClone;
+  };
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    initialState: {
-      pageSize: paginationSize
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    state: {
+      sorting,
+      columnFilters
+    },
+    autoResetPageIndex,
+    meta: {
+      updateFilter: (value, columnId) => {
+        const newFilters = handleFilter(value, columnId);
+        setColumnFilters(newFilters);
+      },
+      removeObj: row => {
+        const {original} = row;
+        removeItem(original.id);
+      }
     }
   });
 
+  const sortDirection = direction => {
+    if (!direction) return null;
+    return direction === 'asc' ? '\u25b2' : '\u25bc';
+  };
+
+  useEffect(() => {
+    if (data.length !== dataLength) {
+      if (table.getCoreRowModel().rows.length % table.options.state.pagination.pageSize === 1) {
+        table.setPageIndex(table.getPageCount());
+      } else {
+        table.setPageIndex(table.getPageCount() - 1);
+      }
+      setDataLength(data.length);
+    }
+  }, [data]);
+
   return (
-    <Table hover responsive size="sm" striped>
-      <thead>
-        {table.getHeaderGroups().map(headerGroup => (
-          <tr key={headerGroup.id}>
-            {showIndex && <th>#</th>}
-            {headerGroup.headers.map(header => (
-              <th key={header.id}>
-                <div>
-                  {flexRender(header.column.columnDef.header, header.getContext())}
-                </div>
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody>
-        {table.getRowModel().rows.length > 0 ? (
-          table.getRowModel().rows.map((row, idx) => (
-            <tr key={row.id} onClick={() => onRowClick(row.original.id)}>
-              {showIndex && <td>{idx+1}</td>}
-              {row.getVisibleCells().map(cell => (
-                <td key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
+    <>
+      <Table hover responsive size="sm" striped>
+        <thead>
+          {table.getHeaderGroups().map(headerGroup => (
+            <tr key={headerGroup.id}>
+              {/* {showIndex && <th>#</th>} */}
+              {headerGroup.headers.map(header => (
+                <th key={header.id} colSpan={header.colSpan} onClick={header.column.getToggleSortingHandler()}>
+                  <div>
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                    {sortDirection(header.column.getIsSorted())}
+                  </div>
+                </th>
               ))}
             </tr>
-          ))
-        ) : (
-          <tr className="text-center" colSpan={table.getHeaderGroups()[0].headers.length}>
-            <td>
-              No Jobs to display
-            </td>
-          </tr>
-        )}
-      </tbody>
-    </Table>
+          ))}
+          {table.getHeaderGroups().map(headerGroup => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map(header => (
+                <th key={header.id}>
+                  <div>
+                    {header.column.getCanFilter() ? (
+                      <Filter data={header.column.getFilterValue() || ''} updateTable={table.options.meta.updateFilter} columnId={header.id} type={header.column.columnDef?.type}/>
+                    ) : (
+                      <br/>
+                    )}
+                  </div>
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {table.getRowModel().rows.length > 0 ? (
+            table.getRowModel().rows.map(row => (
+              <tr key={row.id} onClick={() => onRowClick(row.original.id)}>
+                {row.getVisibleCells().map(cell => (
+                  <td key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td className="text-center" colSpan={table.getHeaderGroups()[0].headers.length?.toString() + 1}>
+                No Jobs to display
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </Table>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <DropdownButton
+          className="me-1"
+          title={table.options.state.pagination.pageSize}
+          defaultValue={10}
+          onSelect={e => table.setPageSize(e)}
+          size="sm"
+        >
+          <Dropdown.Item eventKey="10">10</Dropdown.Item>
+          <Dropdown.Item eventKey="20">20</Dropdown.Item>
+          <Dropdown.Item eventKey="30">30</Dropdown.Item>
+          <Dropdown.Item eventKey="40">40</Dropdown.Item>
+          <Dropdown.Item eventKey="50">50</Dropdown.Item>
+          <Dropdown.Item eventKey="60">60</Dropdown.Item>
+          <Dropdown.Item eventKey="70">70</Dropdown.Item>
+          <Dropdown.Item eventKey="80">80</Dropdown.Item>
+          <Dropdown.Item eventKey="90">90</Dropdown.Item>
+          <Dropdown.Item eventKey="100">100</Dropdown.Item>
+        </DropdownButton>
+        <div className="d-flex">
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Button disabled={!table.getCanPreviousPage()} onClick={() => table.setPageIndex(0)} size="sm">{'<<'}</Button>
+            <Button className="me-1" disabled={!table.getCanPreviousPage()} onClick={() => table.previousPage()} size="sm">{'<'}</Button>
+            {`${table.options.state.pagination.pageIndex + 1} / ${table.getPageCount()}`}
+            <Button className="ms-1" disabled={!table.getCanNextPage()} onClick={() => table.nextPage()} size="sm">{'>'}</Button>
+            <Button disabled={!table.getCanNextPage()} onClick={() => table.setPageIndex(table.getPageCount() - 1)} size="sm">{'>>'}</Button>
+          </div>
+        </div>
+      </div>
+      <pre>{JSON.stringify(columnFilters, 0, 2)}</pre>
+    </>
   );
 };
 
@@ -61,7 +182,8 @@ DisplayTable.propTypes = {
   columns: PropTypes.array,
   onRowClick: PropTypes.func,
   paginationSize: PropTypes.number,
-  showIndex: PropTypes.bool
+  showIndex: PropTypes.bool,
+  removeItem: PropTypes.func
 };
 
 export default DisplayTable;

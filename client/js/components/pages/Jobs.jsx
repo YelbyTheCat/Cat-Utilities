@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {createJob, getJobs} from '../../actions/jobs-actions';
+import {createJob, deleteJob, getJobs} from '../../actions/jobs-actions';
 
 import Alert from 'react-bootstrap/Alert';
 import JobsTable from '../tables/JobsTable';
@@ -32,12 +32,20 @@ const Jobs = () => {
     try {
       const highestId = Math.max.apply(null, jobs.map(job => {return job.id;}));
       data.id = jobs.length ? highestId + 1 : 1;
-      console.log('before await', data);
       const res = await createJob(data);
       if (res.data) await fetchJobs();
     } catch (e) {
       // Do nothing
       console.error(e);
+    }
+  };
+
+  const removeJob = async id => {
+    try {
+      const res = await deleteJob(id);
+      if (res.data === '') await fetchJobs();
+    } catch (e) {
+      setError(`Failed to delete ${id}`);
     }
   };
 
@@ -50,7 +58,7 @@ const Jobs = () => {
           <div>
             <NewButton label="New Job" onClick={() => setShow(true)}/>
             <NewButton className="ms-1" label="Refresh" variant='link' onClick={async () => await fetchJobs()}/>
-            <JobsTable data={jobs} paginationSize={100}/>
+            <JobsTable data={jobs} removeItem={removeJob}/>
           </div>
         )}
       </div>

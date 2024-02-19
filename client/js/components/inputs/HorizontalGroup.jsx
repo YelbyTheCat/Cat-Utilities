@@ -8,7 +8,7 @@ const HorizontalGroup = ({children}) => {
   return (
     <Row>
       {children.map((child, idx) => (
-        <Col key={idx}>
+        <Col sm key={idx}>
           {child}
         </Col>
       ))}

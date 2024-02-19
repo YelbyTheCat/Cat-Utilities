@@ -37,7 +37,6 @@ const Job = () => {
   }, []);
 
   const onSubmit = async data => {
-    console.log(data);
     try {
       const res = await updateJob(jobId, data);
       setError(null);

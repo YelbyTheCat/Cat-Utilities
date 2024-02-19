@@ -147,14 +147,53 @@ router.patch('/:id', async (req, res) => {
       },
     });
 
-    console.log('updateResponse', updateResponse);
-
     if (updateResponse.status === 200) {
       res.send(newData);
     }
   } catch (e) {
     console.error('Error updating data in Google Sheets:', e.message);
     res.status(500).send('Internal Server Error');
+  }
+});
+
+router.delete('/:id', async (req, res) => {
+  const {id} = req.params;
+  if (!id) res.status(400).send('No id');
+
+  let values = null;
+
+  try {
+    const {googleSheets, auth} = await authGoogleApi();
+    const getRows = await googleSheets.spreadsheets.values.get({
+      auth,
+      spreadsheetId,
+      range: tableName, 
+    });
+    
+    values = getRows?.data?.values || [];
+
+    const targetRowIndex = values.findIndex(row => row[0] === id);
+    if (targetRowIndex === -1) return res.status(404).send('Row not found');
+
+    const formattedData = formatJobObjectToJobsArray({id: ''});
+
+    // Perform batch update to remove row
+    const updateResponse = await googleSheets.spreadsheets.values.update({
+      auth,
+      spreadsheetId,
+      range: `${tableName}!A${targetRowIndex + 1}`,
+      valueInputOption: 'RAW',
+      resource: {
+        values: [formattedData],
+      },
+    });
+
+    if (updateResponse.status === 200) {
+      res.sendStatus(204);
+    }
+  } catch (e) {
+    console.error('Error deleting row from Google Sheets:', e.message);
+    return res.status(500).send('Internal Server Error');
   }
 });
 

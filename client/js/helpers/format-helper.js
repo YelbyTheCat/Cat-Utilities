@@ -81,7 +81,7 @@ const formatJobsArrayToObjectArray = row => {
 const createRowFromObject = (header, obj) => {
   const newRow = [];
   for (let i = 0; i < header.length; i++) {
-    newRow[i] = obj[header[i].property] || null;
+    newRow[i] = obj[header[i].property] || '';
   }
   return newRow;
 };
