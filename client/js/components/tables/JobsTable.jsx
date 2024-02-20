@@ -36,17 +36,17 @@ const JobsTable = ({data, paginationSize, removeItem}) => {
     columnHelper.accessor('heardBack', {
       header: 'Heard Back',
       type: 'boolean',
-      cell: info => <FontAwesomeIcon icon={info.getValue()?.toLowerCase() === 'true' ? faCheck : faX}/>
+      cell: info => <FontAwesomeIcon icon={info.getValue() ? faCheck : faX}/>
     }),
     columnHelper.accessor('inProgress', {
       header: 'Pending',
       type: 'boolean',
-      cell: info => <FontAwesomeIcon icon={info.getValue()?.toLowerCase() === 'true' ? faCheck : faX}/>
+      cell: info => <FontAwesomeIcon icon={info.getValue() ? faCheck : faX}/>
     }),
     columnHelper.accessor('denied', {
       header: 'Denied',
       type: 'boolean',
-      cell: info => <FontAwesomeIcon icon={info.getValue()?.toLowerCase() === 'true' ? faCheck : faX}/>
+      cell: info => <FontAwesomeIcon icon={info.getValue() ? faCheck : faX}/>
     }),
     columnHelper.display({
       header: 'Actions',
