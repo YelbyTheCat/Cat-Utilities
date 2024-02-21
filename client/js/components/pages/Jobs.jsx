@@ -30,7 +30,6 @@ const Jobs = () => {
   const onSubmit = async data => {
     setShow(false);
     try {
-      console.log(data);
       const res = await createJob(data);
       if (res.data) await fetchJobs();
     } catch (e) {
@@ -42,7 +41,6 @@ const Jobs = () => {
   const removeJob = async id => {
     try {
       const res = await deleteJob(id);
-      console.log(res);
       if (res.data) await fetchJobs();
     } catch (e) {
       setError(`Failed to delete ${id}`);
