@@ -24,7 +24,30 @@ const formatProperty = text => {
   return _.camelCase(text);
 };
 
+/**
+ * 
+ * @param {Array} data 
+ * @returns {Array}
+ */
+const convertBooleanToString = data => {
+  const dataClone = structuredClone(data);
+  dataClone.rows = dataClone.rows.map(obj => {
+    const newObj = {};
+    for (const key in obj) {
+      if (typeof obj[key] === 'boolean') {
+        newObj[key] = obj[key].toString();
+      } else {
+        newObj[key] = obj[key];
+      }
+    }
+    return newObj;
+  });
+  
+  return dataClone;
+};
+
 module.exports = {
   formatMoney,  
-  formatProperty
+  formatProperty,
+  convertBooleanToString
 };

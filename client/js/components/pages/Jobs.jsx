@@ -5,6 +5,7 @@ import Alert from 'react-bootstrap/Alert';
 import JobsTable from '../tables/JobsTable';
 import NewButton from '../buttons/NewButton';
 import JobsModal from '../modals/JobsModal';
+import {convertBooleanToString} from '../../helpers/format-helper';
 
 const Jobs = () => {
 
@@ -16,7 +17,8 @@ const Jobs = () => {
     try {
       const res = await getJobs();
       const {data} = res;
-      setJobs(data.rows);
+      const converted = convertBooleanToString(data);
+      setJobs(converted.rows);
       setError(null);
     } catch (e) {
       setError("Couldn't get jobs");

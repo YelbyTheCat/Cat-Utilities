@@ -9,7 +9,6 @@ import {useNavigate} from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 
 const JobsTable = ({data, paginationSize, removeItem}) => {
-
   const navigate = useNavigate();
 
   const columnHelper = createColumnHelper();
@@ -36,17 +35,17 @@ const JobsTable = ({data, paginationSize, removeItem}) => {
     columnHelper.accessor('heardBack', {
       header: 'Heard Back',
       type: 'boolean',
-      cell: info => <FontAwesomeIcon icon={info.getValue() ? faCheck : faX}/>
+      cell: info => <FontAwesomeIcon icon={info.getValue() === 'true' ? faCheck : faX}/>
     }),
     columnHelper.accessor('inProgress', {
       header: 'Pending',
       type: 'boolean',
-      cell: info => <FontAwesomeIcon icon={info.getValue() ? faCheck : faX}/>
+      cell: info => <FontAwesomeIcon icon={info.getValue() === 'true' ? faCheck : faX}/>
     }),
     columnHelper.accessor('denied', {
       header: 'Denied',
       type: 'boolean',
-      cell: info => <FontAwesomeIcon icon={info.getValue() ? faCheck : faX}/>
+      cell: info => <FontAwesomeIcon icon={info.getValue() === 'true' ? faCheck : faX}/>
     }),
     columnHelper.display({
       header: 'Actions',
