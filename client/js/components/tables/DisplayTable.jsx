@@ -79,14 +79,25 @@ const DisplayTable = ({data, columns, onRowClick, removeItem}) => {
   };
 
   useEffect(() => {
-    if (data.length !== dataLength) {
-      if (table.getCoreRowModel().rows.length % table.options.state.pagination.pageSize === 1) {
-        table.setPageIndex(table.getPageCount());
-      } else {
-        table.setPageIndex(table.getPageCount() - 1);
-      }
-      setDataLength(data.length);
+    const pageSize = table.options.state.pagination.pageSize;
+    const currentPageIndex = table.options.state.pagination.pageIndex;
+    const pageCount = table.getPageCount();
+
+    // Add Item
+    if (data.length > dataLength) {
+      const newPageIndex = Math.ceil(data.length / pageSize) - 1;
+      table.setPageIndex(newPageIndex);
     }
+
+    if (data.length < dataLength) {
+      // Last page
+      if (currentPageIndex === pageCount) {
+        table.setPageIndex(pageCount - 1);
+      } else {
+        table.setPageIndex(currentPageIndex);
+      }
+    }
+    setDataLength(data.length);
   }, [data]);
 
   return (
@@ -150,6 +161,7 @@ const DisplayTable = ({data, columns, onRowClick, removeItem}) => {
           onSelect={e => table.setPageSize(e)}
           size="sm"
         >
+          <Dropdown.Item eventKey="5">5</Dropdown.Item>
           <Dropdown.Item eventKey="10">10</Dropdown.Item>
           <Dropdown.Item eventKey="20">20</Dropdown.Item>
           <Dropdown.Item eventKey="30">30</Dropdown.Item>

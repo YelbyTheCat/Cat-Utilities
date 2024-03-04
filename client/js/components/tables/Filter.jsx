@@ -21,9 +21,9 @@ const Filter = ({data, updateTable, columnId, type}) => {
     switch (type) {
       case 'boolean': return (
         <Form.Select onChange={e => setValue(e.target.value)} {...{value}}>
-          <option value={null}>{' '}</option>
-          <option value={true}>True</option>
-          <option value={false}>False</option>
+          <option value="">{' '}</option>
+          <option value="true">True</option>
+          <option value="false">False</option>
         </Form.Select>
       );
       case 'date': return <Form.Control type="date" onChange={e => setValue(e.target.value)} {...{value}}/>;

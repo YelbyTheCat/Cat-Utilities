@@ -5,6 +5,7 @@ import Alert from 'react-bootstrap/Alert';
 import JobsTable from '../tables/JobsTable';
 import NewButton from '../buttons/NewButton';
 import JobsModal from '../modals/JobsModal';
+import {convertBooleanToString} from '../../helpers/format-helper';
 
 const Jobs = () => {
 
@@ -16,7 +17,8 @@ const Jobs = () => {
     try {
       const res = await getJobs();
       const {data} = res;
-      setJobs(data);
+      const converted = convertBooleanToString(data);
+      setJobs(converted.rows);
       setError(null);
     } catch (e) {
       setError("Couldn't get jobs");
@@ -30,8 +32,6 @@ const Jobs = () => {
   const onSubmit = async data => {
     setShow(false);
     try {
-      const highestId = Math.max.apply(null, jobs.map(job => {return job.id;}));
-      data.id = jobs.length ? highestId + 1 : 1;
       const res = await createJob(data);
       if (res.data) await fetchJobs();
     } catch (e) {
@@ -43,7 +43,7 @@ const Jobs = () => {
   const removeJob = async id => {
     try {
       const res = await deleteJob(id);
-      if (res.data === '') await fetchJobs();
+      if (res.data) await fetchJobs();
     } catch (e) {
       setError(`Failed to delete ${id}`);
     }
