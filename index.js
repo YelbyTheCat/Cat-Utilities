@@ -9,6 +9,7 @@ app.use(require('body-parser').json());
 // Api Paths
 app.use('/api/google-sheets', require('./routes/api/google-sheets'));
 app.use('/api/jobs', require('./routes/api/jobs'));
+app.use('/api/finances', require('./routes/api/finances'));
 
 // Refresh fix
 const config = require('./config/webpack.config');

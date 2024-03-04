@@ -1,5 +1,3 @@
-// models/job.js
-
 module.exports = (sequelize, DataTypes) => {
   const Job = sequelize.define('Job', {
     id: {

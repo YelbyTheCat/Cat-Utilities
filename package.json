@@ -8,7 +8,9 @@
     "build": "npx webpack --config ./config/webpack.production.js",
     "serve": "npx webpack serve --config ./config/webpack.config.js",
     "lint": "npx eslint",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "createMigration": "npx sequelize migration:create --name",
+    "migrate": "npx sequelize db:migrate"
   },
   "author": "Yelby",
   "license": "ISC",
