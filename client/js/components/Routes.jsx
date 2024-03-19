@@ -2,7 +2,7 @@ import React from 'react';
 
 import {Routes as RoutesComponent, Route} from 'react-router-dom';
 import Home from './pages/Home';
-import Money from './pages/Money';
+import Finances from './pages/Finances';
 
 import Jobs from './pages/Jobs';
 import Job from './jobs/job';
@@ -13,7 +13,7 @@ const Routes = () => {
     <RoutesComponent>
       <Route element={<Layout/>}>
         <Route index element={<Home/>}/>
-        <Route path="money" element={<Money/>}/>
+        <Route path="finances" element={<Finances/>}/>
         <Route path="jobs">
           <Route index element={<Jobs/>}/>
           <Route path=":jobId" element={<Job/>}/>
