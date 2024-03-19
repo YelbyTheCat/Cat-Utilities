@@ -1,5 +1,5 @@
 const router = require('express').Router();
-// const {pick} = require('lodash');
+const {pick} = require('lodash');
 const {Finance} = require('../../models');
 
 router.get('/', async (req, res) => {
@@ -24,6 +24,55 @@ router.get('/:id', async (req, res) => {
   } catch (e) {
     console.error(e);
     res.status(500).send('Internal Server Error');
+  }
+});
+
+router.post('/', async (req, res) => {
+  try {
+    const newFinance = await Finance.create(pick(req.body,
+      'amount',
+      'transactionType',
+      'name',
+      'date',
+      'details'
+    ));
+    res.send(newFinance);
+  } catch (e) {
+    console.log('Error creating finance:', e);
+    res.status(500).json({error: 'Could not create finance'});
+  }
+});
+
+router.patch('/:id', async (req, res) => {
+  const {id} = req.params;
+  const finance = await Finance.findOne({where: {id}});
+  if (!finance) return res.sendStatus(404);
+
+  try {
+    const updatedFinance = await finance.update(pick(req.body,
+      'amount',
+      'transactionType',
+      'name',
+      'date',
+      'details'
+    ));
+    res.send(updatedFinance);
+  } catch (e) {
+    console.error('Error updating finance:', e);
+    res.status(500).json({error: 'Could not create finance'});
+  }
+});
+
+router.delete('/:id', async (req, res) => {
+  const {id} = req.params;
+  const finance = await Finance.findOne({where: {id}});
+  if (!finance) return res.sendStatus(404);
+
+  try {
+    finance.destroy();
+    return res.send({});
+  } catch (e) {
+    res.sendStatus(500);
   }
 });
 

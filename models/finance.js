@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
     amount: DataTypes.TEXT,
-    transaction_type: {
+    transactionType: {
       type: DataTypes.ENUM('Debit', 'Credit'),
       allowNull: false
     },
