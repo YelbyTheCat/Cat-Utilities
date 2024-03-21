@@ -11,9 +11,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM('Debit', 'Credit'),
       allowNull: false
     },
-    name: {
+    companyName: {
       allowNull: false,
-      type: DataTypes.DATE
+      type: DataTypes.TEXT
     },
     date: {
       allowNull: false,
