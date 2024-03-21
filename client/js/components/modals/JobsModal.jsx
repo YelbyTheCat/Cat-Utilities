@@ -37,7 +37,6 @@ const JobsModal = ({show, setShow, onSubmit}) => {
 };
 
 JobsModal.propTypes = {
-  header: PropTypes.array,
   show: PropTypes.bool,
   setShow: PropTypes.func,
   onSubmit: PropTypes.func

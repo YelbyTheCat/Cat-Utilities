@@ -5,12 +5,15 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import FinanceDisplay from '../finances/FinanceDisplay';
 import FinanceConsolidation from '../finances/FinanceConsolidation';
-import {getFinances} from '../../actions/finances-actions';
+import {createFinance, getFinances} from '../../actions/finances-actions';
+import FinancesModal from '../modals/FinancesModal';
+import NewButton from '../buttons/NewButton';
 
 const Finances = () => {
 
   const [finances, setFinances] = useState(null);
   const [error, setError] = useState(null);
+  const [show, setShow] = useState(false);
 
   const fetchFinances = async () => {
     try {
@@ -27,9 +30,22 @@ const Finances = () => {
     fetchFinances();
   }, []);
 
+  const onSubmit = async data => {
+    setShow(false);
+    try {
+      const res = await createFinance(data);
+      if (res.data) await fetchFinances();
+    } catch (e) {
+      // Do nothing
+      console.error(e);
+      setError('Failed to create Finance');
+    }
+  };
+
   return (
     <>
-      {error & <Alert variant='danger'>{error}</Alert>}
+      {error && <Alert variant='danger'>{error}</Alert>}
+      <NewButton label="New Finance" onClick={() => setShow(true)} size="sm"/>
       <Row>
         <Col>
           <FinanceDisplay {...{finances}}/>
@@ -38,6 +54,7 @@ const Finances = () => {
           <FinanceConsolidation/>
         </Col>
       </Row>
+      <FinancesModal {...{show, setShow, onSubmit}}/>
     </>
   );
 };

@@ -2,6 +2,14 @@ const router = require('express').Router();
 const {pick} = require('lodash');
 const {Finance} = require('../../models');
 
+const fields = [
+  'amount',
+  'transactionType',
+  'companyName',
+  'date',
+  'details'
+];
+
 router.get('/', async (req, res) => {
   const options = {
     order: [['date', 'DESC']]
@@ -29,13 +37,7 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const newFinance = await Finance.create(pick(req.body,
-      'amount',
-      'transactionType',
-      'name',
-      'date',
-      'details'
-    ));
+    const newFinance = await Finance.create(pick(req.body, fields));
     res.send(newFinance);
   } catch (e) {
     console.log('Error creating finance:', e);
@@ -49,13 +51,7 @@ router.patch('/:id', async (req, res) => {
   if (!finance) return res.sendStatus(404);
 
   try {
-    const updatedFinance = await finance.update(pick(req.body,
-      'amount',
-      'transactionType',
-      'name',
-      'date',
-      'details'
-    ));
+    const updatedFinance = await finance.update(pick(req.body, fields));
     res.send(updatedFinance);
   } catch (e) {
     console.error('Error updating finance:', e);

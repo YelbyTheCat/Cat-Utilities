@@ -16,10 +16,8 @@ const HorizontalGroup = ({children}) => {
   );
 };
 
-
 HorizontalGroup.propTypes = {
   children: PropTypes.array
 };
-
 
 export default HorizontalGroup;
