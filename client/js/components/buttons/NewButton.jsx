@@ -1,14 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Button from 'react-bootstrap/Button';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
+import IconButton from './IconButton';
 
 const NewButton = ({className, label='New', variant='success', onClick, size}) => (
-  <Button {...{className, variant, onClick, size}}>
-    <FontAwesomeIcon icon={faPlusCircle}/> {label}
-  </Button>
+  <IconButton variant="success" icon={faPlusCircle} {...{className, variant, onClick, size, label}}/>
 );
 
 NewButton.propTypes = {
