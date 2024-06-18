@@ -23,12 +23,12 @@ function useSkipper() {
   return [shouldSkip, skip];
 }
 
-const DisplayTable = ({data, columns, onRowClick, removeItem}) => {
+const DisplayTable = ({data = [], columns, onRowClick, removeItem}) => {
 
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [autoResetPageIndex/*, skipAutoResetPageIndex*/] = useSkipper();
-  const [dataLength, setDataLength] = useState(data.length || 0);
+  const [dataLength, setDataLength] = useState(data?.length || 0);
 
   const handleFilter = (value, columnId) => {
     const columnFiltersClone = structuredClone(columnFilters);

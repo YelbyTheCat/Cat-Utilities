@@ -9,6 +9,7 @@ import Dropdown from '../inputs/Dropdown';
 import Money from '../inputs/Money';
 import Date from '../inputs/Date';
 import Array from '../inputs/Array';
+import FormSubmit from '../buttons/FormSubmit';
 
 const FinancesModal = ({show, setShow, onSubmit}) => {
   return (
@@ -22,12 +23,15 @@ const FinancesModal = ({show, setShow, onSubmit}) => {
           <Dropdown label="Transaction Type" options={['Debit', 'Credit']}/>
           <Money label="Amount"/>
         </HorizontalGroup>
-        <Array label="Details">
+        <Array label="Details" newButtonLabel="Add Item">
           <HorizontalGroup>
             <Text property="name" placeholder="Item"/>
             <Money property="price" placeholder="Price"/>
           </HorizontalGroup>
         </Array>
+        <div className="d-flex flex-row-reverse">
+          <FormSubmit align="right"/>
+        </div>
       </FormWrapper>
     </BaseModal>
   );

@@ -16,6 +16,21 @@ router.get('/', async (req, res) => {
   };
   try {
     const finances = await Finance.findAndCountAll(options);
+
+    // const organizedData = finances.reduce((acc, finance) => {
+    //   const date = new Date(finance.date);
+    //   const year = date.getFullYear();
+    //   const month = date.toLocaleDateString('default', {month: 'long'}).toLowerCase();
+
+    //   if (!acc[year]) acc[year] = {};
+
+    //   if (!acc[year][month]) acc[year][month] = [];
+
+    //   acc[year][month].push(finance);
+
+    //   return acc;
+    // }, {});
+
     res.send(finances);
   } catch (e) {
     console.error(e);

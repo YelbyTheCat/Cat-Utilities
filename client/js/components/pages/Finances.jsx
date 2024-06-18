@@ -11,7 +11,7 @@ import NewButton from '../buttons/NewButton';
 
 const Finances = () => {
 
-  const [finances, setFinances] = useState(null);
+  const [finances, setFinances] = useState([]);
   const [error, setError] = useState(null);
   const [show, setShow] = useState(false);
 
@@ -19,7 +19,7 @@ const Finances = () => {
     try {
       const res = await getFinances();
       const {data} = res;
-      setFinances(data);
+      setFinances(data.rows);
       setError(null);
     } catch (e) {
       setError("Couldn't get finances");
@@ -46,14 +46,15 @@ const Finances = () => {
     <>
       {error && <Alert variant='danger'>{error}</Alert>}
       <NewButton label="New Finance" onClick={() => setShow(true)} size="sm"/>
-      <Row>
-        <Col>
-          <FinanceDisplay {...{finances}}/>
-        </Col>
-        <Col>
-          <FinanceConsolidation/>
-        </Col>
-      </Row>
+      {finances && (
+        <Row>
+          <Col>
+            <FinanceDisplay {...{finances}}/>
+          </Col>
+          <Col>
+            <FinanceConsolidation/>
+          </Col>
+        </Row>)}
       <FinancesModal {...{show, setShow, onSubmit}}/>
     </>
   );

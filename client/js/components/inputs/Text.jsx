@@ -10,10 +10,6 @@ const Text = ({className='mb-1', label='', placeholder, disabled, property, as, 
   const controlId = property ? property : formatProperty(label);
   const control = reg || controlId;
 
-  console.log(`${label} | ${reg}`);
-  console.log('Text - controlId: ', `${property} | ${formatProperty(label)}`);
-  console.log('Text - Registration: ', `${reg} | ${controlId} | ${control}`);
-
   return (
     <Form.Group {...{className}} controlId={control}>
       {label && <Form.Label>{label}</Form.Label>}

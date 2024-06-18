@@ -1,19 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import FinancesTable from '../tables/FinancesTable';
 
 
-const FinanceDisplay = () => {
+const FinanceDisplay = ({finances}) => {
   return (
     <div>
-      I am all the finances
+      <FinancesTable data={finances}/>
     </div>
   );
 };
 
-
 FinanceDisplay.propTypes = {
-
+  finances: PropTypes.array
 };
-
 
 export default FinanceDisplay;

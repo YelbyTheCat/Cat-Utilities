@@ -16,8 +16,6 @@ const Money = ({className='mb-1', label, placeholder, disabled, property, reg}) 
     setValue(reg || controlId, formattedValue, {shouldValidate: true});
   };
 
-  console.log('Mone - Registration: ', `${reg} | ${controlId}`);
-
   return (
     <Form.Group {...{className}} controlId={reg || controlId}>
       {label && <Form.Label>{label}</Form.Label>}

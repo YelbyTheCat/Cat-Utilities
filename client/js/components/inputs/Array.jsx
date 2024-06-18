@@ -9,7 +9,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import NewButton from '../buttons/NewButton';
 import {getFormId} from '../../helpers/misc-helper';
 
-const Array = ({ className = 'mb-1', label = '', property, children }) => {
+const Array = ({ className = 'mb-1', label = '', newButtonLabel = '', property, children }) => {
   const { control } = useFormContext();
   const controlId = property || formatProperty(label);
   const { fields, append, remove } = useFieldArray({ control, name: controlId });
@@ -44,7 +44,8 @@ const Array = ({ className = 'mb-1', label = '', property, children }) => {
           <IconButton className="ms-3" icon={faTimes} onClick={() => remove(idx)} variant="danger"/>
         </div>
       ))}
-      <NewButton onClick={() => append(createAppend())} label="Add Detail" size="sm"/>
+      {!fields.length && <br/>}
+      <NewButton onClick={() => append(createAppend())} label={newButtonLabel} size="sm"/>
     </Form.Group>
   );
 };
@@ -53,7 +54,8 @@ Array.propTypes = {
   className: PropTypes.string,
   label: PropTypes.string,
   property: PropTypes.string,
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
+  newButtonLabel: PropTypes.string
 };
 
 export default Array;
