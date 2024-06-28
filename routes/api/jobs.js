@@ -6,7 +6,7 @@ const {Job} = require('../../models');
 
 router.get('/', async (req, res) => {
   const options = {
-    order: [['dateApplied', 'ASC']]
+    order: [['dateApplied', 'ASC'], ['createdAt', 'ASC']]
   };
   try {
     const jobs = await Job.findAndCountAll(options);

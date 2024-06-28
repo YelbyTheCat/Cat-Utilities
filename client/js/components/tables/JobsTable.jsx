@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import {createColumnHelper} from '@tanstack/react-table';
 import DisplayTable from './DisplayTable';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faCheck, faX} from '@fortawesome/free-solid-svg-icons';
+import {faCheck, faTrashCan, faX} from '@fortawesome/free-solid-svg-icons';
 import {useNavigate} from 'react-router-dom';
-import Button from 'react-bootstrap/Button';
+import IconButton from '../buttons/IconButton';
 
 const JobsTable = ({data, paginationSize, removeItem}) => {
   const navigate = useNavigate();
@@ -51,14 +51,14 @@ const JobsTable = ({data, paginationSize, removeItem}) => {
       header: 'Actions',
       cell: info => (
         <div className="d-flex justify-content-center align-items-center">
-          <Button variant="danger" onClick={e => {e.stopPropagation(); info.table.options.meta.removeObj(info.row);}}>X</Button>
+          <IconButton variant="danger" onClick={e => {e.stopPropagation(); info.table.options.meta.removeObj(info.row);}} iconOnly icon={faTrashCan}/>
         </div>
       )
     })
   ];
 
   return (
-    <DisplayTable onRowClick={id => navigate(`${id.toString()}`)} showIndex columns={defaultColumns} {...{data, paginationSize, removeItem}}/>
+    <DisplayTable onRowClick={id => navigate(`${id.toString()}`)} showIndex columns={defaultColumns} striped {...{data, paginationSize, removeItem}}/>
   );
 };
 

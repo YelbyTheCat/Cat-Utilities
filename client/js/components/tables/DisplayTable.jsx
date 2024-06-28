@@ -23,7 +23,7 @@ function useSkipper() {
   return [shouldSkip, skip];
 }
 
-const DisplayTable = ({data = [], columns, onRowClick, removeItem}) => {
+const DisplayTable = ({data = [], columns, onRowClick, removeItem, striped}) => {
 
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
@@ -102,7 +102,7 @@ const DisplayTable = ({data = [], columns, onRowClick, removeItem}) => {
 
   return (
     <>
-      <Table hover responsive size="sm" striped>
+      <Table hover responsive size="sm" {...{striped}}>
         <thead>
           {table.getHeaderGroups().map(headerGroup => (
             <tr key={headerGroup.id}>
@@ -121,7 +121,7 @@ const DisplayTable = ({data = [], columns, onRowClick, removeItem}) => {
             <tr key={headerGroup.id}>
               {headerGroup.headers.map(header => (
                 <th key={header.id}>
-                  <div>
+                  <div style={{alignContent: 'center'}}>
                     {header.column.getCanFilter() ? (
                       <Filter data={header.column.getFilterValue() || ''} updateTable={table.options.meta.updateFilter} columnId={header.id} type={header.column.columnDef?.type}/>
                     ) : (
@@ -138,7 +138,7 @@ const DisplayTable = ({data = [], columns, onRowClick, removeItem}) => {
             table.getRowModel().rows.map(row => (
               <tr key={row.id} onClick={() => onRowClick(row.original.id)}>
                 {row.getVisibleCells().map(cell => (
-                  <td key={cell.id}>
+                  <td key={cell.id} style={{verticalAlign: 'middle'}}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
@@ -156,6 +156,7 @@ const DisplayTable = ({data = [], columns, onRowClick, removeItem}) => {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <DropdownButton
           className="me-1"
+          variant="text"
           title={table.options.state.pagination.pageSize}
           defaultValue={10}
           onSelect={e => table.setPageSize(e)}
@@ -175,11 +176,11 @@ const DisplayTable = ({data = [], columns, onRowClick, removeItem}) => {
         </DropdownButton>
         <div className="d-flex">
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Button disabled={!table.getCanPreviousPage()} onClick={() => table.setPageIndex(0)} size="sm">{'<<'}</Button>
-            <Button className="me-1" disabled={!table.getCanPreviousPage()} onClick={() => table.previousPage()} size="sm">{'<'}</Button>
+            <Button variant="text" style={{border: '0px'}} disabled={!table.getCanPreviousPage()} onClick={() => table.setPageIndex(0)} size="sm">{'<<'}</Button>
+            <Button className="me-1" style={{border: '0px'}} variant="text" disabled={!table.getCanPreviousPage()} onClick={() => table.previousPage()} size="sm">{'<'}</Button>
             {`${table.options.state.pagination.pageIndex + 1} / ${table.getPageCount()}`}
-            <Button className="ms-1" disabled={!table.getCanNextPage()} onClick={() => table.nextPage()} size="sm">{'>'}</Button>
-            <Button disabled={!table.getCanNextPage()} onClick={() => table.setPageIndex(table.getPageCount() - 1)} size="sm">{'>>'}</Button>
+            <Button className="ms-1" variant="text" style={{border: '0px'}} disabled={!table.getCanNextPage()} onClick={() => table.nextPage()} size="sm">{'>'}</Button>
+            <Button variant="text" style={{border: '0px'}} disabled={!table.getCanNextPage()} onClick={() => table.setPageIndex(table.getPageCount() - 1)} size="sm">{'>>'}</Button>
           </div>
         </div>
       </div>
@@ -195,7 +196,8 @@ DisplayTable.propTypes = {
   onRowClick: PropTypes.func,
   paginationSize: PropTypes.number,
   showIndex: PropTypes.bool,
-  removeItem: PropTypes.func
+  removeItem: PropTypes.func,
+  striped: PropTypes.bool
 };
 
 export default DisplayTable;

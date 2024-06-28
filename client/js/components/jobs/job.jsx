@@ -60,8 +60,8 @@ const Job = () => {
         </HorizontalGroup>
         <HorizontalGroup>
           <Date label="Date Applied"/>
-          <Money label="Range Max"/>
           <Money label="Range Min"/>
+          <Money label="Range Max"/>
         </HorizontalGroup>
         <Bool label="Heard back"/>
         <Date label="Heard back date"/>

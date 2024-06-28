@@ -22,8 +22,8 @@ const JobsModal = ({show, setShow, onSubmit}) => {
         </HorizontalGroup>
         <HorizontalGroup>
           <Date label="Date Applied"/>
-          <Money label="Range Max"/>
           <Money label="Range Min"/>
+          <Money label="Range Max"/>
         </HorizontalGroup>
         <TextArea label='Company Summary'/>
         <TextArea label='Tasks'/>
