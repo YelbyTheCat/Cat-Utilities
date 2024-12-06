@@ -24,6 +24,8 @@ const FinancesTable = ({data, paginationSize, removeItem}) => {
     }),
     columnHelper.accessor('transactionType', {
       header: 'D/C',
+      type: 'select',
+      data: {options: [{value: 'Debit', label: 'Debit (Money Out)'}, {value: 'Credit', label: 'Credit (Money In)'}, 'Pizza']},
       cell: info => <FontAwesomeIcon style={{color: info.getValue() === 'Debit' ? 'red' : 'green'}} icon={info.getValue() === 'Debit' ? faArrowDown : faArrowUp}/>
     }),
     columnHelper.display({

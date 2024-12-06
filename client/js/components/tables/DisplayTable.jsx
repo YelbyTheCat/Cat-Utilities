@@ -8,6 +8,8 @@ import Button from 'react-bootstrap/Button';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 
+import './styles.css';
+
 function useSkipper() {
   const shouldSkipRef = useRef(true);
   const shouldSkip = shouldSkipRef.current;
@@ -100,6 +102,17 @@ const DisplayTable = ({data = [], columns, onRowClick, removeItem, striped}) => 
     setDataLength(data.length);
   }, [data]);
 
+  useEffect(() => {
+    // Check if the content is truncated and add a tooltip if it is
+    document.querySelectorAll('.truncate').forEach(item => {
+      if (item.scrollWidth > item.clientWidth) {
+        item.setAttribute('title', item.textContent);
+      } else {
+        item.removeAttribute('title');
+      }
+    });
+  }, [table.getRowModel().rows]);
+
   return (
     <>
       <Table hover responsive size="sm" {...{striped}}>
@@ -123,7 +136,7 @@ const DisplayTable = ({data = [], columns, onRowClick, removeItem, striped}) => 
                 <th key={header.id}>
                   <div style={{alignContent: 'center'}}>
                     {header.column.getCanFilter() ? (
-                      <Filter data={header.column.getFilterValue() || ''} updateTable={table.options.meta.updateFilter} columnId={header.id} type={header.column.columnDef?.type}/>
+                      <Filter filterValue={header.column.getFilterValue() || ''} updateTable={table.options.meta.updateFilter} columnId={header.id} type={header.column.columnDef?.type} data={header.column.columnDef?.data}/>
                     ) : (
                       <br/>
                     )}
@@ -138,7 +151,7 @@ const DisplayTable = ({data = [], columns, onRowClick, removeItem, striped}) => 
             table.getRowModel().rows.map(row => (
               <tr key={row.id} onClick={() => onRowClick(row.original.id)}>
                 {row.getVisibleCells().map(cell => (
-                  <td key={cell.id} style={{verticalAlign: 'middle'}}>
+                  <td key={cell.id} className="truncate" style={{verticalAlign: 'middle'}}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}

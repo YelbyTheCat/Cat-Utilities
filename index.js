@@ -30,6 +30,6 @@ app.get('*', (req, res, next) => {
   });
 });
 
-app.listen(port, () => {
+app.listen(port, 'localhost', () => {
   console.log(`Cat-Utilities is listening on port ${port}`);
 });
