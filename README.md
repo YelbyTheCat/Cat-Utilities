@@ -26,4 +26,5 @@ NPM
  - Potentially add the ability to link it with a bank (Wells Fargo)
    
 [ ] Make into a "git page" with optional database directions (local / personal)
+
 [ ] Add Websocket to mobile app
