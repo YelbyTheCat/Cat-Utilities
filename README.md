@@ -20,3 +20,10 @@ NPM
 7. Where it says `PG_USER` & `PG_PASSWORD` & `PG_DEV_DB_NAME` (default is `cat_utilities_dev`) these are for your local PostgreSQL
 8. Run `npm run migrate` to generate the tables
 9. Now everything should be done run it by doing `npm run start` then go to [localhost:3000](http://localhost:3000/)
+
+## Road Map
+[ ] Add Finance section - Adds a page and database that tracks finances with: filtering, editing, and circular usage
+ - Potentially add the ability to link it with a bank (Wells Fargo)
+   
+[ ] Make into a "git page" with optional database directions (local / personal)
+[ ] Add Websocket to mobile app
